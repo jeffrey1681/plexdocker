@@ -83,3 +83,23 @@ services:
       - TZ=${TZ}  
     depends_on:
       - plexms
+
+    # ----------------------------------------
+    # OMBI
+    # Request Service for Plex Content
+    # ----------------------------------------
+  ombi:
+    image: linuxserver/ombi
+    container_name: ombi
+    restart: always
+    ports:
+        - '${IP_ADDRESS}:3579:3579'
+    environment:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - VIRTUAL_HOST=request.${DOMAIN}
+        - LETSENCRYPT_HOST=request.${DOMAIN}
+        - LETSENCRYPT_EMAIL=${EMAIL}
+    volumes:
+        - ${USERDIR}/docker/ombi:/config
+        - ${USERDIR}/docker/shared:/shared
