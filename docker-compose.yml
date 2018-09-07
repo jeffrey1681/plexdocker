@@ -40,7 +40,7 @@ services:
     container_name: plex
     restart: always
     image: plexinc/pms-docker:${PMSTAG}
-    network_mode: 'host'
+#    network_mode: 'host'
     hostname: ${HOSTNAME}
     volumes:
       - ${USERDIR}/docker/plexms:/config
@@ -66,3 +66,20 @@ services:
       - PLEX_UID=${PUID}
       - PLEX_GID=${PGID}
       - TZ=${TZ}
+
+  tautulli:
+    container_name: tautulli
+    restart: always
+    image: linuxserver/tautulli
+    volumes:
+      - ${USERDIR}/docker/tautulli/config:/config
+      - ${USERDIR}/docker/tautulli/logs:/logs:ro
+      - ${USERDIR}/docker/shared:/shared
+    ports:
+      - "${IP_ADDRESS}:8181:8181"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}  
+    depends_on:
+      - plexms
