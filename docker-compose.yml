@@ -1,5 +1,9 @@
 version: "3.6"
 services:
+  # ----------------------------------------
+  # Portainer
+  # Manage running docker containers
+  # ----------------------------------------
   portainer:
     image: portainer/portainer
     container_name: portainer
@@ -14,6 +18,10 @@ services:
     environment:
       - TZ=${TZ}
  
+  # ----------------------------------------
+  # Organizr
+  # Dashboard for server applications
+  # ----------------------------------------
   organizr:
     container_name: organizr
     restart: always
@@ -28,6 +36,10 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
 
+  # ----------------------------------------
+  # Watchtower
+  # Check and keep docker images up to date
+  # ----------------------------------------
   watchtower:
     container_name: watchtower
     restart: always
@@ -36,11 +48,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --schedule "0 0 4 * * *" --cleanup
 
+  # ----------------------------------------
+  # Plex
+  # Media Server
+  # ----------------------------------------
   plexms:
     container_name: plex
     restart: always
     image: plexinc/pms-docker:${PMSTAG}
-#    network_mode: 'host'
     hostname: ${HOSTNAME}
     volumes:
       - ${USERDIR}/docker/plexms:/config
@@ -67,6 +82,10 @@ services:
       - PLEX_GID=${PGID}
       - TZ=${TZ}
 
+  # ----------------------------------------
+  # Tautulli
+  # Plex analytics
+  # ----------------------------------------
   tautulli:
     container_name: tautulli
     restart: always
@@ -84,10 +103,10 @@ services:
     depends_on:
       - plexms
 
-    # ----------------------------------------
-    # OMBI
-    # Request Service for Plex Content
-    # ----------------------------------------
+  # ----------------------------------------
+  # OMBI
+  # Request Service for Plex Content
+  # ----------------------------------------
   ombi:
     image: linuxserver/ombi
     container_name: ombi
@@ -103,3 +122,28 @@ services:
     volumes:
         - ${USERDIR}/docker/ombi:/config
         - ${USERDIR}/docker/shared:/shared
+
+  # ----------------------------------------
+  # NETDATA
+  # System Resource Monitoring Service
+  # ----------------------------------------
+  netdata:
+    image: titpetric/netdata
+    container_name: netdata
+    restart: unless-stopped
+    ports:
+        - '${IP_ADDRESS}:19999:19999'
+    environment:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - VIRTUAL_HOST=netdata.${DOMAIN}
+        - LETSENCRYPT_HOST=netdata.${DOMAIN}
+        - LETSENCRYPT_EMAIL=${EMAIL}
+    cap_add:
+        - SYS_PTRACE
+    volumes:
+        - '/proc:/host/proc:ro'
+        - '/sys:/host/sys:ro'
+        - '/etc/localtime:/etc/localtime:ro'
+        - '/var/run/docker.sock:/var/run/docker.sock'
+
