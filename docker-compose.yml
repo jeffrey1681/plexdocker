@@ -151,16 +151,31 @@ services:
     # Resilio Sync
     # Sync folders
     # ----------------------------------------
-    sync:
-        image: resilio/sync
-        container_name: sync
+    #   sync:
+    #   image: resilio/sync
+    #   container_name: sync
+    #   restart: always
+    #   ports:
+    #       - '${IP_ADDRESS}:8888:8888'
+    #       - '${IP_ADDRESS}:55555:55555'
+    #    volumes:
+    #       - ${USERDIR}/docker/sync:/mnt/sync
+    #       - ${USERDIR}:/mnt/mounted_folders/home
+
+    # ----------------------------------------
+    # Syncthing
+    # Sync folder
+    # ----------------------------------------
+    syncthing:
+        image: linuxserver/syncthing:latest
         restart: always
         ports:
-            - '${IP_ADDRESS}:8888:8888'
-            - '${IP_ADDRESS}:55555:55555'
+            - "${IP_ADDRESS}:8384:8384"
+            - "${IP_ADDRESS}:22000:22000"
+            - "${IP_ADDRESS}:21027:21027/udp"
         volumes:
-            - ${USERDIR}/docker/sync:/mnt/sync
-            - ${USERDIR}:/mnt/mounted_folders/home
+            - ${USERDIR}/docker/syncthing:/var/syncthing/config
+            - ${USERDIR}:/var/syncthing
 
     # ----------------------------------------
     # PiHole
