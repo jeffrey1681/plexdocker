@@ -209,3 +209,48 @@ services:
             - ${USERDIR}/docker/pihole:/etc/pihole
             - ${USERDIR}/docker/pihole/pihole.log:/var/log/pihole.log
         restart: always
+
+# ----------------------------------------
+    # SONARR
+    # TV Series Management
+    # ----------------------------------------
+    sonarr:
+        image: linuxserver/sonarr
+        container_name: sonarr
+        restart: unless-stopped
+        ports:
+            - '${IP_ADDRESS}:8989:8989'
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - VIRTUAL_HOST=sonarr.${DOMAIN}
+            - LETSENCRYPT_HOST=sonarr.${DOMAIN}
+            - LETSENCRYPT_EMAIL=${EMAIL}
+        volumes:
+            - '${USERDIR}/docker/sonarr:/config'
+            - '/mnt/video/Torrents:/data/Completed'
+            - '/mnt/video/TV:/tv'
+            - '/etc/localtime:/etc/localtime:ro'
+
+    # ----------------------------------------
+    # RADARR
+    # Movie Management
+    # ----------------------------------------
+    radarr:
+        image: linuxserver/radarr
+        container_name: radarr
+        restart: unless-stopped
+        ports:
+            - '${IP_ADDRESS}:7878:7878'
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - VIRTUAL_HOST=radarr.${DOMAIN}
+            - LETSENCRYPT_HOST=radarr.${DOMAIN}
+            - LETSENCRYPT_EMAIL=${EMAIL}
+        volumes:
+            - '${USERDIR}/docker/radarr:/config'
+            - '/mnt/video/Torrents:/data/Completed'
+            - '/mnt/video/Movies:/movies'
+            - '/etc/localtime:/etc/localtime:ro'
+
