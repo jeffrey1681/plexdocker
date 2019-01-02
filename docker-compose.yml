@@ -141,6 +141,8 @@ services:
             - LETSENCRYPT_EMAIL=${EMAIL}
         cap_add:
             - SYS_PTRACE
+        security_opt:
+            - apparmor:unconfined
         volumes:
             - '/proc:/host/proc:ro'
             - '/sys:/host/sys:ro'
@@ -166,16 +168,16 @@ services:
     # Syncthing
     # Sync folder
     # ----------------------------------------
-    syncthing:
-        image: linuxserver/syncthing:latest
-        restart: always
-        ports:
-            - "${IP_ADDRESS}:8384:8384"
-            - "${IP_ADDRESS}:22000:22000"
-            - "${IP_ADDRESS}:21027:21027/udp"
-        volumes:
-            - ${USERDIR}/docker/syncthing:/var/syncthing/config
-            - ${USERDIR}:/var/syncthing
+    #    syncthing:
+    #   image: linuxserver/syncthing:latest
+    #   restart: always
+    #   ports:
+    #       - "${IP_ADDRESS}:8384:8384"
+    #       - "${IP_ADDRESS}:22000:22000"
+    #       - "${IP_ADDRESS}:21027:21027/udp"
+    #   volumes:
+    #       - ${USERDIR}/docker/syncthing:/var/syncthing/config
+    #       - ${USERDIR}:/var/syncthing
 
     # ----------------------------------------
     # PiHole
@@ -183,6 +185,9 @@ services:
     # ----------------------------------------
     pihole:
         image: pihole/pihole:latest
+        dns:
+            - 127.0.0.1
+            - 1.1.1.1
         ports:
             - "${IP_ADDRESS}:53:53/tcp"
             - "${IP_ADDRESS}:53:53/udp"
