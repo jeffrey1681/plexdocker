@@ -254,3 +254,48 @@ services:
             - '/mnt/video/Movies:/movies'
             - '/etc/localtime:/etc/localtime:ro'
 
+    # ----------------------------------------
+    # Grafana
+    # Pretty Dashboard
+    # ----------------------------------------
+    grafana:
+        image: grafana/grafana
+        container_name: grafana
+        restart: always
+        ports:
+            - '${IP_ADDRESS}:3000:3000'
+        volumes:
+            - 'grafana-volume:/var/lib/grafana'
+
+    # ----------------------------------------
+    # InfluxDB
+    # Time Series DB
+    # ----------------------------------------
+    influxdb:
+        image: influxdb
+        container_name: influxdb
+        restart: always
+        ports:
+            - '${IP_ADDRESS}:8086:8086'
+        volumes:
+            - 'influxdb-volume:/var/lib/influxdb'
+            - '${USERDIR}/docker/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro'
+
+    # ----------------------------------------
+    # Chronograf
+    # UI for InfluxDB
+    # ----------------------------------------
+    chronograf:
+        image: chronograf
+        container_name: chronograf
+        restart: unless-stopped
+        ports:
+            - '${IP_ADDRESS}:8888:8888'
+        volumes:
+            - '${USERDIR}/docker/chronograf:/var/lib/chronograf'
+
+volumes:
+    grafana-volume:
+        external: true
+    influxdb-volume:
+        external: true
