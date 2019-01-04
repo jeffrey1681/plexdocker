@@ -122,6 +122,8 @@ services:
         volumes:
             - ${USERDIR}/docker/ombi:/config
             - ${USERDIR}/docker/shared:/shared
+        depends_on:
+            - plexms
 
     # ----------------------------------------
     # NETDATA
@@ -261,11 +263,20 @@ services:
     grafana:
         image: grafana/grafana
         container_name: grafana
-        restart: always
+        restart: unless-stopped
         ports:
             - '${IP_ADDRESS}:3000:3000'
         volumes:
+            #- '${USERDIR}/docker/grafana:/var/lib/grafana'
             - 'grafana-volume:/var/lib/grafana'
+        environment:
+            #            - GF_PATHS_DATA=/config/data
+            #- GF_PATHS_LOGS=/config/logs
+            #- GF_PATHS_PLUGINS=/config/plugins
+            #- GF_PATHS_CONFIG=/config/grafana.ini
+            - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+        depends_on:
+            - influxdb
 
     # ----------------------------------------
     # InfluxDB
@@ -274,12 +285,12 @@ services:
     influxdb:
         image: influxdb
         container_name: influxdb
-        restart: always
+        restart: unless-stopped
         ports:
             - '${IP_ADDRESS}:8086:8086'
         volumes:
-            - 'influxdb-volume:/var/lib/influxdb'
-            - '${USERDIR}/docker/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro'
+            - '${USERDIR}/docker/influxdb:/var/lib/influxdb'
+              #- '${USERDIR}/docker/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro'
 
     # ----------------------------------------
     # Chronograf
@@ -293,9 +304,26 @@ services:
             - '${IP_ADDRESS}:8888:8888'
         volumes:
             - '${USERDIR}/docker/chronograf:/var/lib/chronograf'
+        depends_on:
+            - influxdb
+
+    # ----------------------------------------
+    # Varken
+    # Stats for Plex
+    # ----------------------------------------
+    varken:
+        image: boerderij/varken
+        container_name: varken
+        restart: unless-stopped
+        volumes:
+            - '${USERDIR}/docker/varken:/config'
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+        depends_on:
+            - influxdb
 
 volumes:
     grafana-volume:
-        external: true
-    influxdb-volume:
         external: true
