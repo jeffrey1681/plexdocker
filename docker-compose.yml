@@ -323,6 +323,10 @@ services:
             - TZ=${TZ}
         depends_on:
             - influxdb
+            - tautulli
+            - ombi
+            - sonarr
+            - radarr
 
 volumes:
     grafana-volume:
