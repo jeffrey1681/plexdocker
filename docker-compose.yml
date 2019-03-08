@@ -22,12 +22,31 @@ services:
     # Organizr
     # Dashboard for server applications
     # ----------------------------------------
-    organizr:
-        container_name: organizr
+    #    organizr:
+    #   container_name: organizr
+    #   restart: always
+    #   image: lsiocommunity/organizr
+    #   volumes:
+    #       - ${USERDIR}/docker/organizr:/config
+    #       - ${USERDIR}/docker/shared:/shared
+    #   ports:
+    #       - "8080:80"
+    #   environment:
+    #       - PUID=${PUID}
+    #       - PGID=${PGID}
+    #       - TZ=${TZ}
+
+    # ----------------------------------------
+    # Organizr v2
+    # Dashboard for server applications
+    # ----------------------------------------
+    organizrv2:
+        container_name: organizrv2
         restart: always
-        image: lsiocommunity/organizr
+        image: organizrtools/organizr-v2:latest
+        # plex tag - plex theme
         volumes:
-            - ${USERDIR}/docker/organizr:/config
+            - ${USERDIR}/docker/organizrv2:/config
             - ${USERDIR}/docker/shared:/shared
         ports:
             - "8080:80"
@@ -187,6 +206,9 @@ services:
     # ----------------------------------------
     pihole:
         image: pihole/pihole:latest
+        container_name: pihole
+        cap_add:
+            - NET_ADMIN
         dns:
             - 127.0.0.1
             - 1.1.1.1
@@ -207,6 +229,7 @@ services:
             #   Point any of the jwilder virtual_host addresses
             # to your docker host ip address
             #- 'pihole.yourdomain.local:192.168.1.55'
+            - WEBPASSWORD=VcI1bPB8kgtAm4FZY8PP
         volumes:
             - ${USERDIR}/docker/pihole:/etc/pihole
             - ${USERDIR}/docker/pihole/pihole.log:/var/log/pihole.log
