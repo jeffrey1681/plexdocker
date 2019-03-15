@@ -351,6 +351,20 @@ services:
             - sonarr
             - radarr
 
+    # ----------------------------------------
+    # Factorio
+    # Headless server for factorio
+    # ----------------------------------------
+    factorio:
+        image: dtandersen/factorio:latest
+        container_name: factorio
+        restart: always
+        volumes:
+            - ${USERDIR}/docker/factorio:/factorio
+        ports:
+            - '${IP_ADDRESS}:34197:34197/udp'
+            - '${IP_ADDRESS}:27015:27015/tcp'
+
 volumes:
     grafana-volume:
         external: true
