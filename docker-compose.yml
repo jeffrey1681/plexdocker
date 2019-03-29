@@ -108,7 +108,8 @@ services:
     tautulli:
         container_name: tautulli
         restart: always
-        image: linuxserver/tautulli
+        # image: linuxserver/tautulli
+        image: tautulli/tautulli
         volumes:
             - ${USERDIR}/docker/tautulli/config:/config
             - ${USERDIR}/docker/tautulli/logs:/logs:ro
@@ -356,6 +357,7 @@ services:
     # Headless server for factorio
     # ----------------------------------------
     factorio:
+        #image: dtandersen/factorio:0.17-dev
         image: dtandersen/factorio:latest
         container_name: factorio
         restart: always
