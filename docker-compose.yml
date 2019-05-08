@@ -357,8 +357,9 @@ services:
     # Headless server for factorio
     # ----------------------------------------
     factorio:
-        #image: dtandersen/factorio:0.17-dev
-        image: dtandersen/factorio:latest
+        #image: dtandersen/factorio:latest
+        #image: factorio_local
+        image: factoriotools/factorio:latest
         container_name: factorio
         restart: always
         volumes:
