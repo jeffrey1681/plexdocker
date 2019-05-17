@@ -355,11 +355,12 @@ services:
     # ----------------------------------------
     # Factorio
     # Headless server for factorio
+    # https://github.com/dtandersen/docker_factorio_server
     # ----------------------------------------
     factorio:
         #image: dtandersen/factorio:latest
-        #image: factorio_local
-        image: factoriotools/factorio:latest
+        image: factorio_local
+        #image: factoriotools/factorio:latest
         container_name: factorio
         restart: always
         volumes:
@@ -367,6 +368,30 @@ services:
         ports:
             - '${IP_ADDRESS}:34197:34197/udp'
             - '${IP_ADDRESS}:27015:27015/tcp'
+
+    # ----------------------------------------
+    # Factorio Manager
+    # Manage mods, saves, etc for Factorio server
+    # https://github.com/mroote/factorio-server-manager
+    # ----------------------------------------
+    #    factorio_manager:
+    #   image: majormjr/factorio-server-manager
+    #   container_name: factorio_manager
+    #   restart: unless-stopped
+    #   ports: 
+    #       - '${IP_ADDRESS}:8082:8082'
+    #       - '${IP_ADDRESS}:8443:443'
+    #       - '${IP_ADDRESS}:34198:34197/udp'
+    #   volumes:
+    #       - ${USERDIR}/docker/factorio:/factorio
+    #       - ${USERDIR}/docker/factorio-manager:/config
+    #   environment:
+    #       - host=${IP_ADDRESS}
+    #       - port=8082
+    #       - conf=/config
+    #       - config=/config
+    #   depends_on:
+    #       - factorio
 
 volumes:
     grafana-volume:
